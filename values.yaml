@@ -41,7 +41,8 @@ image:
   repository: apache/nifi
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "2.4.0"
+  #tag: "1.19.0"
 
 # Set to `true` to pause at startup before loading the application
 debugStartup: false
@@ -53,7 +54,7 @@ shutdown:
 
 ui:
   refreshInterval: 10 sec
-  timeZone: "Asia/Calcutta" # IANA timezone identifier. Time is displayed using this timezone in the UI.
+  timeZone: "Europe/Spain" # IANA timezone identifier. Time is displayed using this timezone in the UI.
   maxThreads: "" # Maximum number of Jetty threads to use for UI and HTTP site-to-site connections
 
 tls:
@@ -240,6 +241,11 @@ extraTakeOwnershipPaths: [ ]
 
 ingress:
   enabled: true
+  #tls: true
+  tls:
+    - hosts:
+        - nifi.local
+      secretName: nifi-tls
   ingressClassName: nginx
   hostName: nifi.local # nifi.example.com
   siteToSite:
@@ -267,12 +273,15 @@ umask: "" # "0002"
 auth:
   oidc:
     enabled: true
-    clientId: nifi-client
-    clientSecret: XQgT6o4tBu0vRdGxiIWtq2ij51zt5Yde
+    clientId: "nifi-client"
+    clientSecret: "XQgT6o4tBu0vRdGxiIWtq2ij51zt5Yde"
     issuerUrl: "https://keycloak.local/realms/master/.well-known/openid-configuration"
+    claim_identifying_user: "preferred_username"
+    initial_admin_identity: "admin"
+    truststorestrategy: "NIFI"
 
 security:
-  enabled: false
+  enabled: true
   certManager:
     enabled: true
 

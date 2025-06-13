@@ -125,9 +125,12 @@ data:
     {{- with .Values.global.oidc -}}
     {{- /* Download SSL certificate from keycloak host */}}
     {{- $fullUrl := toString (.oidc_url | default "") -}}
-    {{- $trimmedPrefix := $fullUrl | trimPrefix "https://" -}}
-    {{- $hostOnly := $trimmedPrefix | trimSuffix "/realms" -}}
-    echo Host to target is {{ $hostOnly }}
+    {{- $parsedUrl := $fullUrl | urlParse -}}
+    {{- $hostOnly := $parsedUrl.host -}}
+    echo "DEBUG: Full URL: {{ $fullUrl }}"
+    echo "DEBUG: Parsed URL: {{ $parsedUrl | toYaml | nindent 4 }}"
+    echo "DEBUG: Type of parsedUrl.host: {{ $parsedUrl.host }}"
+    echo "Host to target is \"{{ $hostOnly }}\"-END"
     echo | openssl s_client -connect {{ $hostOnly }}:443 -servername {{ $hostOnly }} -showcerts 2>/dev/null > /tmp/keycloak.crt
     echo "$(date): Inspecting Keycloak certificate..."
     openssl x509 -in /tmp/keycloak.crt -text -noout
@@ -135,7 +138,9 @@ data:
       -file /tmp/keycloak.crt \
       -storepass "${TRUSTSTORE_PASSWORD}" \
       -destkeystore $tls_dir/truststore.p12 \
-      -deststoretype pkcs12
+      -deststoretype pkcs12 \
+      -alias keycloak
+    echo "$(date): Keycloak certificate correctly added to truststore."
     {{- end }}
     {{- end }}
 
