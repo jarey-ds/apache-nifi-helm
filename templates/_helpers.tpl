@@ -149,6 +149,8 @@ Comon NiFi OIDC environment variables
   value: {{ .claim_identifying_user | quote }}
 - name: INITIAL_ADMIN_IDENTITY
   value: {{ .initial_admin_identity | quote }}
+- name: NIFI_SECURITY_USER_OIDC_TRUSTSTORE_STRATEGY
+  value: {{ .truststorestrategy | quote }}
 {{- end }}
 {{- end }}
 

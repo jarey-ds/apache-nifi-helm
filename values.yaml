@@ -7,7 +7,7 @@ global:
     repository: public.ecr.aws/docker/library/busybox:stable
 
   nifi:
-    nodeCount: 3
+    nodeCount: 1
 
   serviceAccount:
     # Name of the existing service account to use. If not defined, one is created.
@@ -20,27 +20,28 @@ global:
       duration: 8760h # 365 days
       renewBefore: 168h # 7 days
       keystorePasswordSecretRef:
-        name: ""
+        name: "nifi"
         key: password
 
   encryption:
     sensitivePropertiesKey:
       secretRef:
-        name: ""
-        key: ""
+        name: "my-sensitive"
+        key: "my-sensitive"
 
   oidc:
-    oidc_url: ""
-    client_id: ""
-    client_secret: ""
+    oidc_url: "https://keycloak.local/realms/master/.well-known/openid-configuration"
+    client_id: "nifi-client"
+    client_secret: "XQgT6o4tBu0vRdGxiIWtq2ij51zt5Yde"
     claim_identifying_user: "preferred_username"
-    initial_admin_identity: ""
+    initial_admin_identity: "admin"
+    truststorestrategy: "NIFI"
 
 image:
   repository: apache/nifi
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 # Set to `true` to pause at startup before loading the application
 debugStartup: false
@@ -239,8 +240,8 @@ extraTakeOwnershipPaths: [ ]
 
 ingress:
   enabled: true
-  ingressClassName: alb
-  hostName: example.com # nifi.example.com
+  ingressClassName: nginx
+  hostName: nifi.local # nifi.example.com
   siteToSite:
     subDomain: s2s # Subdomain for site-to-site traffic (e.g. s2s.example.com)
   annotations: { }
@@ -262,25 +263,38 @@ securityContext:
 # Set a custom umask for the `nifi` user
 umask: "" # "0002"
 
+
+auth:
+  oidc:
+    enabled: true
+    clientId: nifi-client
+    clientSecret: XQgT6o4tBu0vRdGxiIWtq2ij51zt5Yde
+    issuerUrl: "https://keycloak.local/realms/master/.well-known/openid-configuration"
+
+security:
+  enabled: false
+  certManager:
+    enabled: true
+
 volumeClaims:
   config:
-    storageClass: "gp3"
-    size: "5Gi"
+    storageClass: "standard"
+    size: "1Gi"
   state:
-    storageClass: "gp3"
-    size: "10Gi"
+    storageClass: "standard"
+    size: "1Gi"
   logs:
-    storageClass: "gp3"
-    size: "2Gi"
+    storageClass: "standard"
+    size: "1Gi"
   flowfile:
-    storageClass: "gp3"
-    size: "10Gi"
+    storageClass: "standard"
+    size: "1Gi"
   content:
-    storageClass: "gp3"
-    size: "15Gi"
+    storageClass: "standard"
+    size: "1Gi"
   provenance:
-    storageClass: "gp3"
-    size: "10Gi"
+    storageClass: "standard"
+    size: "1Gi"
 
 probeTimings:
   startup:

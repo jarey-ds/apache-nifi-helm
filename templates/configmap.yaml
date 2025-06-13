@@ -106,6 +106,7 @@ data:
     prop_add 'nifi.nar.library.directory.custom' {{ .Values.customLibPath | squote }}
 
     {{- /* Generate a TLS cert for this node from the CSI-provided certificates and private key */}}
+    echo "Entering the TLS generation cert block"
     cert_dir='/opt/certmanager'
     tls_dir='/opt/tls'
     rm -f $tls_dir/*
@@ -120,6 +121,22 @@ data:
       -storepass "${TRUSTSTORE_PASSWORD}" \
       -destkeystore $tls_dir/truststore.p12 \
       -deststoretype pkcs12
+    echo "Importing truststore.p12, going for the keycloak one."
+    {{- with .Values.global.oidc -}}
+    {{- /* Download SSL certificate from keycloak host */}}
+    {{- $fullUrl := toString (.oidc_url | default "") -}}
+    {{- $trimmedPrefix := $fullUrl | trimPrefix "https://" -}}
+    {{- $hostOnly := $trimmedPrefix | trimSuffix "/realms" -}}
+    echo Host to target is {{ $hostOnly }}
+    echo | openssl s_client -connect {{ $hostOnly }}:443 -servername {{ $hostOnly }} -showcerts 2>/dev/null > /tmp/keycloak.crt
+    echo "$(date): Inspecting Keycloak certificate..."
+    openssl x509 -in /tmp/keycloak.crt -text -noout
+    keytool -import -noprompt -trustcacerts \
+      -file /tmp/keycloak.crt \
+      -storepass "${TRUSTSTORE_PASSWORD}" \
+      -destkeystore $tls_dir/truststore.p12 \
+      -deststoretype pkcs12
+    {{- end }}
     {{- end }}
 
     {{- /* Task termination period */}}
