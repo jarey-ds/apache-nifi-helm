@@ -1,0 +1,71 @@
+{
+  "clientId": "nifi-client",
+  "name": "nifi-client",
+  "description": "nifi-client",
+  "rootUrl": "https://nifi.local/",
+  "adminUrl": "https://nifi.local/",
+  "baseUrl": "https://nifi.local",
+  "surrogateAuthRequired": false,
+  "enabled": true,
+  "alwaysDisplayInConsole": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "rmea3CdlHL9ZSfvgAxmnIQhpy69fbZXI",
+  "redirectUris": [
+    "https://nifi.local",
+    "https://nifi.local/nifi-api/access/oidc/logoutcallback",
+    "https://nifi.local/",
+    "https://nifi.local:443/nifi-api/access/oidc/callback",
+    "https://nifi.local:443/nifi-api/access/oidc/logoutcallback",
+    "https://nifi.local/nifi-api/access/oidc/callback"
+  ],
+  "webOrigins": [
+    "https://nifi.local",
+    "https://nifi.local:443"
+  ],
+  "notBefore": 0,
+  "bearerOnly": false,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": true,
+  "directAccessGrantsEnabled": true,
+  "serviceAccountsEnabled": true,
+  "publicClient": false,
+  "frontchannelLogout": true,
+  "protocol": "openid-connect",
+  "attributes": {
+    "realm_client": "false",
+    "oidc.ciba.grant.enabled": "true",
+    "client.secret.creation.time": "1752583266",
+    "backchannel.logout.session.required": "true",
+    "standard.token.exchange.enabled": "true",
+    "frontchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "https://nifi.local:443/nifi/logout-complete##https://nifi.local/nifi/logout-complete##https://nifi.local/logout-complete##https://nifi.local/logout-complete",
+    "display.on.consent.screen": "false",
+    "oauth2.device.authorization.grant.enabled": "true",
+    "backchannel.logout.revoke.offline.tokens": "false"
+  },
+  "authenticationFlowBindingOverrides": {},
+  "fullScopeAllowed": true,
+  "nodeReRegistrationTimeout": -1,
+  "defaultClientScopes": [
+    "service_account",
+    "web-origins",
+    "acr",
+    "profile",
+    "roles",
+    "basic",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "organization",
+    "microprofile-jwt"
+  ],
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  }
+}

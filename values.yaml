@@ -15,13 +15,21 @@ global:
     # Annotations to add to the service account
     annotations: { }
 
+
   tls:
     certificate:
       duration: 8760h # 365 days
       renewBefore: 168h # 7 days
+      passwordValue: "nifikeystore"
       keystorePasswordSecretRef:
         name: "nifi"
         key: password
+
+  secret:
+    sensitivePropertiesData:
+      entries:
+        - key: "my-sensitive"
+          value: "my-sensitive-value"
 
   encryption:
     sensitivePropertiesKey:
@@ -32,8 +40,9 @@ global:
   oidc:
     oidc_url: "https://keycloak.local/realms/master/.well-known/openid-configuration"
     client_id: "nifi-client"
-    client_secret: "XQgT6o4tBu0vRdGxiIWtq2ij51zt5Yde"
+    client_secret: "rmea3CdlHL9ZSfvgAxmnIQhpy69fbZXI"
     claim_identifying_user: "preferred_username"
+    claim_user_groups: "groups"
     initial_admin_identity: "admin"
     truststorestrategy: "NIFI"
 
